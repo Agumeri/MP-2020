@@ -1,0 +1,12 @@
+Opening tree file ./languages/ES.tree
+Trying to read 48428 words
+OK 48428 words read
+Opening ./languages/ES.scrabble
+OK 25 Scrabble's letter read 
+ALLOWED LETTERS: LTNRUISOAEGDBMPCFVYHQJÃ‘XZ
+SEED: 100
+BAG (95) : RAAEUCEOTEINSJIMMOAREODAADBEGEOEUAUCESSOSDRIVNRAGCETSEHDEFONNIDZÑALUYXILAEACTBTHLQRAIOPULOPAOSN
+PLAYER: AACEERU
+
+%%%OUTPUT
+Error opening file data/OPEN_ERROR.data
