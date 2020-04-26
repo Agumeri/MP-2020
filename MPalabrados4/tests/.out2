@@ -1,0 +1,4 @@
+
+%%%OUTPUT
+Error in call. Please use:
+ -l <language>  [-r <randomnumber> -i <inputfile>]
