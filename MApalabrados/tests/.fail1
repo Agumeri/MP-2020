@@ -1,0 +1,12 @@
+TYPE LANGUAGE: Opening tree file ./languages/EN.tree
+Trying to read 30400 words
+OK 30400 words read
+Opening ./languages/EN.scrabble
+OK 26 Scrabble's letter read 
+ALLOWED LETTERS: EAIONRTLSUDGBCMPFHVWYKJXQZ
+TYPE SEED (<0 RANDOM): 
+%%%OUTPUT
+LANGUAGE: EN ID: 8784
+BAG (-4): 
+3 words found 
+SA

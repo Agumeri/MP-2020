@@ -1,0 +1,12 @@
+TYPE LANGUAGE: Opening tree file ./languages/FR.tree
+Trying to read 21057 words
+OK 21057 words read
+Opening ./languages/FR.scrabble
+OK 26 Scrabble's letter read 
+ALLOWED LETTERS: LNORSTUIAEGDMBCPFHVJQKWXYZ
+TYPE SEED (<0 RANDOM): 
+%%%OUTPUT
+LANGUAGE: FR ID: 66727
+BAG (0): 
+0 words found 
+
