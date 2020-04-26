@@ -36,7 +36,7 @@ private:
 	 * @brief Copy an existing set of movements
 	 * @param ml The set of movements to be copied
 	 */
-	void copy(const Movelist& ml); // hacer que this-> sea un clon de ml
+	void copy(const Movelist &ml); // hacer que this-> sea un clon de ml
 
 public:
     
@@ -49,13 +49,13 @@ public:
 	 * @brief Constructor for @p n number of movements
 	 * @param nmov Number of movements to store
 	 */
-	Movelist(nmov);
+	Movelist(int nmov);
 
 	/**
 	 * @brief Copy constructor
 	 * @param orig The list of movements to be copied
 	 */
-	Movelist(orig); 
+	Movelist(const Movelist &orig); 
 
 	/**
 	 * @brief Destructor
@@ -75,14 +75,15 @@ public:
 	 * @return this Left hand side of the assignement
 	 
 	operator=(orig); */
-
+        
+        
 	/**
 	 * @brief Query the set of movements stored
 	 * @param p The position of the set, numbered from 0 to size()-1
 	 * @precond @p p must be in the interval [0, size()) otherwise, it throws an exception
 	 * @return A copy of the movement in the position p.
 	 */
-	 get(int p);
+	Move get(int p) const;
 
 	/**
 	 * @brief Inserts a new movement in the (already existing) position of the set of movements
@@ -90,49 +91,50 @@ public:
 	 * @precond @p p must be in the interval [0, size()) otherwise, it throws an exception
 	 * @param m The movement to insert
 	 */
-	set(p, m);
-
+	void set(int p,Move m);
+        
 	/**
 	 * @brief Query the number of existing movements in the class 
 	 * @return The size of the set of movements
 	 */
-	inline size() { };
-
+	//inline int size() {return nMove;} const
+        int size() const;
 	/**
 	 * @brief Searches a movement in the set of recorded movements. Two movements are equal if all their data members coincide.
 	 * @param mov The movement to be seeked
 	 * @return The position of the movement in the set, @retval -1 when the movement is not found
 	 */
-	find(mov);
+	int find(Move mov);
 
 	/**
 	 * @brief Adds a copy of the movement at the end of the existing set, incrementing its size in one more movement
 	 * @param mov The new movement
 	 */
-	add(mov);
+	void add(const Move &mov);
 	/**
 	 * @brief Remove the movement from the list and reduces the size in one less movement. If the specified movement
 	 * does not exist, the method does nothing 
 	 * @param mov The movement to be removed
 	 */
-	remove(mov);
+	void remove(Move mov);
 	/**
 	 * @brief Remove the movement stored in the position p and reduces the size in one less movement.
 	 * @param p The position to be removed
 	 * @precond @p p must be in the interval [0, size()) otherwise, it throws an exception
 	 */
-	remove(p);
+	void removePos(int p);
 	/**
 	 *	@brief Removes all the movements that contain a word that does not have at least 2 letters
 	 * or that does not exist in the given language 
 	 * @param l The language 
 	 */
-	zip(l);
+	void zip(const Language &l);
 
 	/**
 	 * @brief Resets the set and leaves it empty 
 	 */
-   clear();
+        void clear();
+        
 	/**
 	 * @brief Computes the whole score of the list of movements by adding the individual scores of each movement contained in the set
 	 * of movements. It does not need the language to compute the scores because this is done inside each movement. 
@@ -140,7 +142,7 @@ public:
 	 * the full list of movements will score -1.
 	 * @return The score of the full set of movements
 	 */
-	getScore();
+	double getScore() const;
 	/**
 	 * @brief Insert the data of the list of movements into an ostream (either cout or file)
 	 * @param os The ostream
