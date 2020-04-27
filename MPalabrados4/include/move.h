@@ -4,6 +4,9 @@
  * @note To be implemented by students
  * @warning Adjust const and references when needed
  */
+
+// Alumno1: Alberto López Jiménez
+// Alumno2: Agustín Mérida Gutierrez
 #ifndef MOVE_H
 #define MOVE_H
 
@@ -106,6 +109,8 @@ public:
 	 * @brief Reads from keyboard the values of the class, except score 
 	 */
 	void read(std::istream &is);
+        
+        bool esIgual(const Move &otro);
 };
 
 #endif /* MOVE_H */

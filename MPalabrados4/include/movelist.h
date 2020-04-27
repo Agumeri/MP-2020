@@ -5,6 +5,9 @@
  * @warning Review data types, consts and references
  */
 
+// Alumno1: Alberto López Jiménez
+// Alumno2: Agustín Mérida Gutierrez
+
 #ifndef MOVELIST_H
 #define MOVELIST_H
 
@@ -91,7 +94,7 @@ public:
 	 * @precond @p p must be in the interval [0, size()) otherwise, it throws an exception
 	 * @param m The movement to insert
 	 */
-	void set(int p,Move m);
+	void set(int p,const Move &m);
         
 	/**
 	 * @brief Query the number of existing movements in the class 
@@ -104,7 +107,7 @@ public:
 	 * @param mov The movement to be seeked
 	 * @return The position of the movement in the set, @retval -1 when the movement is not found
 	 */
-	int find(Move mov);
+	int find(const Move &mov);
 
 	/**
 	 * @brief Adds a copy of the movement at the end of the existing set, incrementing its size in one more movement
@@ -116,7 +119,7 @@ public:
 	 * does not exist, the method does nothing 
 	 * @param mov The movement to be removed
 	 */
-	void remove(Move mov);
+	void remove(const Move &mov);
 	/**
 	 * @brief Remove the movement stored in the position p and reduces the size in one less movement.
 	 * @param p The position to be removed
@@ -142,7 +145,7 @@ public:
 	 * the full list of movements will score -1.
 	 * @return The score of the full set of movements
 	 */
-	double getScore() const;
+	int getScore() const;
 	/**
 	 * @brief Insert the data of the list of movements into an ostream (either cout or file)
 	 * @param os The ostream
