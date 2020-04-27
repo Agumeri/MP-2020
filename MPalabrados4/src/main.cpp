@@ -7,7 +7,13 @@
 
 
 #include <iostream>
-
+#include <string>
+#include "language.h"
+#include "bag.h"
+#include "mi_random.h"
+#include "move.h"
+#include "player.h"
+#include "movelist.h"
 
 using namespace std;
 
@@ -39,74 +45,142 @@ void HallOfFame(const Language &l, int random, const Bag &b, const Player &p,
         const Movelist& original,const Movelist& legal,
         const Movelist& accepted,const Movelist& rejected);
 
-
-/**
- * @brief Main function. 
- * @return 
- */
-int main(int nargs, char * args[]) {
-    Bag bag;
-    Player player;
-    Language language;
-    Move move;
-    Movelist movements,        /// Original list of movements
-            legalmovements,    /// Movements with legal words upon the dictionary
-            acceptedmovements, /// Movements accepted in the game
+int main(int argc, char * argv[]) {
+    Movelist movements, /// Original list of movements
+            legalmovements, /// Movements with legal words upon the dictionary
+            acceptedmovements,/// Movements accepted in the game
             rejectedmovements; /// Movements not accepted in the game
-    /// ...
-    ///@warning: Complete the code
-    /// ...
-/*
-1. El main() recibe como parámetros obligatorios "-l <ID>" y
-"-p <playfile>" y como parámetro opcional "-r <random>" ,
-en cualquier orden entre los tres. En este caso, el parámetro
-"-p" hace referencia a una partida guardada, la cual, por aho-
-ra, sólo tiene los movimientos. Si se especifica "-r" se define
-el aleatorio con el número indicado, si no, no se define aleatorio.
- * 
-2. Crear una instancia de la clase Language con el anterior ID y
-mostrar el conjunto de caracteres permitido para ese lenguaje.
- * 
-3. Crear una instancia de la clase Bag, inicializar el generador de
-números aleatorios con el número aleatorio anterior, si es que
-se ha indicado, y definir su contenido en base al lenguaje que
-se ha declarado anteriormente.
- * 
-4. Crear una instancia de la clase Player y llenarla por comple-
-to con caracteres de la bolsa. Este objeto player deberá estar
-siempre ordenado de la A a la Z.
- * 
-5. Crear una instancia de la clase bf Movelist llamada original
-y leer todos los movimientos desde el fichero indicado en el
-parámetro -p usando el método read(...)
- * 
-6. Crear una instancia de Movelist llamada legal que contenga
-sólo los movimientos de original que están en el diccionario
-del lenguaje elegido. Usar, para ello, el método zip(...)
- * 
-7. Crear dos instancias adicionales de Movelist y llamarlas accepted
-y rejected
- * 
-8. Recorrer toda la lista de movimientos leı́da y, por cada uno de
-ellos.
-a) Si el movimiento está en el diccionario, añadir la palabra a
-la lista accepted , marcarla, calcular su puntuación, según
-el idioma, y mostrarlo en la pantalla.
-b) En otro caso añadirla a la lista rejected y marcarla.
-c) Todos estos mensajes en pantalla no afectan a la validación
-de la práctica, ası́ que el alumno puede implementarlas a
-su propio parecer.
- * 
-9. Terminar con la llamada a HallOfFame para visualizar los re-
-sultados. Esta llamada es la que se utilizará para validar los
-datos.
- * 
-10. Si en cualquier momento se presenta un error en los argumen-
-tos, en la apertura de ficheros o en la lectura de datos del fiche-
-ro, se debe usar la función errorBreak(...) para notificar el error
-y parar el programa.
-*/
-    HallOfFame(language, Id, bag, player, 
+    string bolsa = "";
+    std::string lang = "", ifilename = "", ofilename = "";
+    int random = -1, nwords = 0, score = 0;
+    ifstream ifile;
+    ofstream ofile;
+    istream *input;
+    ostream *output;
+
+    //./mpalabrados3 -l ES -i archivo.dat -r 16
+    //version inicial de lectura de parametros. ¿Bien o mal? ¿Dentro de metodo istream?
+    if(argv[1] != "<"){
+        for (int i = 0; i < argc; i++) {
+            string aux = "";
+            aux += argv[i];
+
+            if (aux == "-l") {
+                if (i + 1 >= argc) errorBreak(ERROR_ARGUMENTS, "");
+                lang = argv[i + 1];
+                i++;
+            } else if (aux == "-p") {
+                if (i + 1 >= argc) errorBreak(ERROR_ARGUMENTS, "");
+                ifilename = argv[i + 1];
+                i++;
+            } else if (aux == "-r") {
+                if (i + 1 >= argc) errorBreak(ERROR_ARGUMENTS, "");
+                random = atoi(argv[i + 1]);
+                i++;
+            } else if (aux == "-b") {
+                if (i + 1 >= argc) errorBreak(ERROR_ARGUMENTS, "");
+                bolsa = argv[i + 1];
+                i++;
+            }
+        }
+    }
+
+    //Si lang está vacío, muestra erro al no haber introducido el parametro obligatorio
+    if (lang == "" || ifilename == "") {
+        errorBreak(ERROR_ARGUMENTS, "");
+    }
+
+    //Creamos instancia del lenguaje con el ID obtenido
+    Language language(lang);
+    cout << "LANGUAGE: " << language.getLanguage() << endl;
+    
+    cout << "ALLOWED LETTERS: " << toUTF(language.getLetterSet()) << endl;
+
+    if (random > -1) {
+        cout << "SEED: " << random << endl;
+    }
+    
+    //Creamos instancia de la clase bag e inicializamos el generador de numeros aleatorios
+    Bag bag;
+
+    if (bolsa != "") {
+        bag.set(toISO(bolsa));
+    } else {
+        bag.define(language);
+    }
+    bag.setRandom(random);
+
+    cout << "BAG (" << bag.size() << ") : " << toUTF(bag.to_string()) << endl;
+
+    //Creamos la instancia de la clase player y la llenamos con caracteres de la bolsa (hasta el maximo posible)
+    Player player;
+    Move move;
+    int puntuacion=0;
+    player.add(bag.extract(7));
+    
+    //Lectura del fichero de movimientos guardados
+    /***********************************************************/
+    if (ifilename == "") {
+        input = &cin;
+    } else {
+        ifile.open(ifilename);
+        if (!ifile) {
+            errorBreak(ERROR_OPEN, ifilename);
+        }
+        input = &ifile;
+        if (!movements.read(*input)) {
+            errorBreak(ERROR_DATA, ifilename);
+        }
+        cout << "Reading from " << ifilename << endl;
+
+        
+    }
+    /***********************************************************/
+    
+    //Asignar movimientos al resto de movelist (legal, accepted, rejected)
+    /***********************************************************/
+    legalmovements.assign(movements);
+  
+    legalmovements.zip(language);
+
+    for (int i = 0; i < legalmovements.size(); i++) {
+        cout << "\nPLAYER: " << player.to_string() << endl;
+        
+        move = legalmovements.get(i);
+        
+        if (player.isValid(move.getLetters())) {
+            //Obtenemos la puntuacion y se la asignamos al objeto 
+            //move que vamos a introducir en acceptedmovements
+            puntuacion = move.findScore(language);
+            move.setScore(puntuacion);
+            acceptedmovements.add(move);
+
+            //Extraemos el contenido de player e introducimos nuevas letras
+            player.extract(move.getLetters());
+            player.add(bag.extract(7 - player.size()));
+
+            //Mostramos por pantalla la información movimiento encontrado valido
+            cout << "MOVEMENT: ";
+            move.print(cout);
+            cout << " FOUND!" << " " << move.getScore() << endl;
+        } else {
+            cout << "MOVEMENT: ";
+            move.print(cout);
+            cout << " INVALID!" << endl;
+            
+            rejectedmovements.add(move);
+        }
+         
+    }
+    /***********************************************************/
+
+    
+    if (input->eof())
+        errorBreak(ERROR_DATA, ifilename);
+
+    ifile.close();
+    
+    HallOfFame (language, random, bag, player, 
             movements, legalmovements, acceptedmovements, rejectedmovements);
     return 0;
 }

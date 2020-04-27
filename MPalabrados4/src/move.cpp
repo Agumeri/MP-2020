@@ -24,6 +24,7 @@ void Move::set(int r, int c, char h, const std::string &l) {
     setCol(c);
     setHorizontal(h);
     setLetters(l);
+    setScore(0);
 }
 
 void Move::setRow(int r) {
@@ -83,8 +84,6 @@ std::string Move::getLetters() const{
 }
 
 void Move::print(std::ostream &os) const{
-    os << "READ: ";
-    
     if(isHorizontal())
         os << "H ";
     else
@@ -106,4 +105,12 @@ void Move::read(std::istream &is) {
     is >> palabra;
 
     set(n_r, n_c, horz, palabra);
+}
+
+bool Move::esIgual(const Move &mov){
+    return (isHorizontal() == mov.isHorizontal() && 
+           getCol() == mov.getCol() && 
+           getRow() == mov.getRow() && 
+           getLetters() == mov.getLetters() &&
+           getScore() == mov.getScore());
 }

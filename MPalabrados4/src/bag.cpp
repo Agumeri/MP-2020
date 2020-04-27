@@ -64,7 +64,7 @@ void Bag::define(const Language &l){
     assert(nletters <= MAXBAG); // para comprobar que hay espacio en el vector, sino excepción!
     for (int k = 0, i = 0; i < forletters.size(); i++)
         for (int j = 0; j < l.getFrequency(forletters[i]); j++)
-            set(k++, forletters[i]);
+            set(k++,(forletters[i]));
     shuffleVector(letters, nletters, id);
 
 }

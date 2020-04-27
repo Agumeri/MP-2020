@@ -69,34 +69,22 @@ void Player::add(std::string frombag){
 }
 
 bool Player::extract(const std::string s){
-    bool continuar = true, encontrado = false;
+    bool res=true;
+    char final[MAXPLAYER+1];
     
-    char aux[MAXPLAYER+1];
-    strcpy(aux,letters);
-    
-    for(int i=0; i<s.size() && continuar; i++){
-        char c = s[i];
-        int j=0;
-        while(j<strlen(aux) && !encontrado){
-            if(aux[j] == c){
-                removeCString(aux,j);
-                encontrado = true;
-            }else{
-                j++;
-            }
-        }
-        if(!encontrado){
-            continuar = false;
-        }
-        encontrado = false;
+    strcpy(final, letters);
+    for (int i=0;i<s.size() && res;i++) {
+        char *p=strchr(final,s[i]);
+        if (p>0) {
+            removeCString(final,p-final);
+        } else
+            res = false;
     }
-    
-    if (continuar){
-        strcpy(letters,aux);
+    if (res) {
+        strcpy(letters, final);
         sortCString(letters);
     }
-    
-    return continuar;
+    return res;
 }
 
 void removeCString(char *cstr, int pos){

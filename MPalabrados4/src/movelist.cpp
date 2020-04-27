@@ -6,7 +6,9 @@
  *  */
 #include <iostream>
 #include <cassert>
+#include "language.h"
 #include "movelist.h"
+#include "player.h"
 
 using namespace std;
 
@@ -68,7 +70,7 @@ Move Movelist::get(int p) const{
     return this->moves[p];
 }
 
-void Movelist::set(int p, Move m){
+void Movelist::set(int p,const Move &m){
     assert(p>=0 && p<nMove);
     moves[p] = m;
 }
@@ -77,7 +79,7 @@ int Movelist::size() const{
     return this->nMove;
 }
 
-int Movelist::find(Move mov){
+int Movelist::find(const Move &mov){
     int pos = -1;
     bool encontrado = false;
     Move aux;
@@ -107,7 +109,7 @@ void Movelist::add(const Move &mov){
     
 }
 
-void Movelist::remove(Move mov){
+void Movelist::remove(const Move &mov){
     Movelist aux;
     Move m_aux;
     
@@ -119,8 +121,6 @@ void Movelist::remove(Move mov){
     }
     
     this->copy(aux);
-    
-    
 }
 
 void Movelist::removePos(int p){
@@ -130,14 +130,16 @@ void Movelist::removePos(int p){
 }
 
 void Movelist::zip(const Language& l){
-    Move aux;
+    Movelist aux;
+    aux.copy(*this);
     
-    for(int i=0; i<this->nMove; i++){
-        aux = this->moves[i];
-        if(aux.getLetters().size() < 2 || l.query(aux.getLetters())){
-            this->remove(aux);
+    for(int i=0; i<aux.size(); i++){
+        if(!l.query(aux.get(i).getLetters())){
+            aux.removePos(i);
         }
     }
+    
+    this->copy(aux);
 }
 
 void Movelist::clear(){
@@ -145,8 +147,8 @@ void Movelist::clear(){
     this->allocate(0);
 }
 
-double Movelist::getScore() const{
-    double puntuacion= 0.0;
+int Movelist::getScore() const{
+    int puntuacion= 0.0;
     
     for(int i=0; i<this->nMove; i++){
         puntuacion += this->moves[i].getScore();
